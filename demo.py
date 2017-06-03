@@ -14,6 +14,7 @@ def main():
   account = dict(
     id=uuid.uuid4(),
     owner=owner['id'],
+    balance=3000.00,
   )
 
   """
@@ -23,42 +24,58 @@ def main():
       'result': [0,2,1,1,-2,0,5,0,0,-2,-3]
     })
   """
-
-  notes = pd.DataFrame(columns=('ts','ticker','op','uprice','quantity','commission','taxe','total'))
+  columns = ('ts','order','ticker','account','op','uprice','quantity','completed','commission','tax','total')
+  print_cols = ['order','ticker','op','uprice','quantity','completed','commission','tax','total']
+  notes = pd.DataFrame(columns=columns)
 
 
   print(notes)
 
   fc = datetime.strptime('22/05/2017 8:30','%d/%m/%Y %H:%M')
+
+  order = 1
+
   notes.loc[fc] = {
     'ts': fc,
+    'order': order,
     'ticker':'POPULAR',
+    'account': account,
     'op': 1,
     'uprice': 0.692,
     'quantity': 300,
+    'completed': 0,
     'commission': 1.21,
-    'taxe': 2.41,
+    'tax': 2.41,
     'total': np.nan
   }
+
+  order = 2
 
   fc = datetime.now()
   notes.loc[fc] = {
     'ts': fc,
+    'order': order,
     'ticker':'POPULAR',
+    'account': account,
     'op': -1,
     'uprice': 0.710,
     'quantity': 300,
+    'completed': 225,
     'commission': 1.21,
-    'taxe': 2.41,
+    'tax': 2.41,
     'total': np.nan
   }
   
-  notes.set_index('ts')
+  notes.set_index(['ts','order'])
 
   pprint(owner)
   pprint(account)
+  pd.options.display.max_rows = 80
+  pd.set_option('display.max_columns', 300)
+  print(notes[print_cols])
+  print(pd.get_option("display.max_columns")) 
 
-  print(notes)
+
 
 if __name__ == "__main__":
     # execute only if run as a script
